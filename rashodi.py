@@ -1,10 +1,11 @@
 ''' Программа контроля 
 рахода семейного бюджета'''
-from tkinter import Tk, Menu, Button, Entry, Label, LabelFrame, OptionMenu, StringVar, END, messagebox, Text
+from tkinter import Tk, Menu, Button, Entry, Label, LabelFrame, OptionMenu, StringVar, END, messagebox as mb, Text, Scrollbar
 import json
 import os
 import datetime
 import sys
+
 
 
 #переменная названия файла
@@ -18,13 +19,7 @@ lst_rashod = []
 window = None
 ent_rashod = None
 ent_dohod = None
-dt_start  = datetime.datetime.today().strftime(date_format)
-new_task = {
-        'cost': None,
-        'date':  dt_start,
-        'type_value': None,
-        'type_item': None
-        }
+dt_start  = datetime.date.today().strftime(date_format)
 
 
 if os.path.exists(file_task):
@@ -61,42 +56,64 @@ def result():
 def add_type_rashod():
     '''добавляем в спикок словарь с нашими расходами
     '''
-    new_task['cost'] = int(ent_rashod_dohod.get())
-    new_task['type_item'] = '-'
-    new_task['type_value'] = variable.get()
-    ent_rashod_dohod.delete(0, END)
-    for task in tasks:
-        if new_task['type_value'] in task['type_value']:
-            new_task['cost'] += task['cost'] 
-    tasks.append(new_task) 
+    #перехватываем ошибку неправильного ввода
+    try:
+        new_task = {
+            'cost':int(ent_rashod_dohod.get()),
+            'type_item': '-',
+            'type_value': variable.get(),
+            'data_create': dt_start
+            }
+        ent_rashod_dohod.delete(0, END)
+        for task in tasks:
+            if new_task['type_value'] in task['type_value']:
+                new_task['cost'] += task['cost']
+        
+        tasks.append(new_task) 
+        write_file()  
+    except ValueError:
+        mb.showerror('Ошибка','Должно быть введено число!')
+
     
-    write_file()
+               
 
 
 def add_type_dohod():
     '''добавляем в список словарь с нашими доходами
     '''
-    new_task['cost'] = int(ent_rashod_dohod.get())
-    new_task['type_item'] = '+'
-    new_task['type_value'] = variable.get()
-    ent_rashod_dohod.delete(0, END)
+    #перехватываем ошибку неправильного ввода
+    try:
+        new_task = {
+            'cost':int(ent_rashod_dohod.get()),
+            'type_item': '+',
+            'type_value': variable.get(),
+            'data_create': dt_start 
+            }
+        ent_rashod_dohod.delete(0, END)
+        for task in tasks:
+            if new_task['type_value'] in task['type_value']:
+                new_task['cost'] += task['cost']
+        
+        tasks.append(new_task)
+        write_file()
+    
+    except ValueError:
+        mb.showerror('Ошибка','Должно быть введено число!')
+
+    ent_rashod_dohod.delete(0, END)   
+
+
+def print_result():
+    
     for task in tasks:
-        if new_task['type_value'] in task['type_value']:
-            new_task['cost'] += task['cost']
-    tasks.append(new_task)
-    
-    write_file()
-
-
-def print_result(): 
-    
-    s = print('Yjghjgjg')
-    #s = sum(lst_dohod) - sum(lst_rashod)  
-    text_result.insert(1.0 ,s)
+        for key in task:
+            value = str(task[key])  + ' ' 
+            text_result.insert(1.0 ,value)
     
     clear_list()
 
-def get_button():
+
+def create_widget():
     '''функция создания кнопок и их активация
     '''
     global ent_rashod_dohod, variable, options, text_result
@@ -119,14 +136,16 @@ def get_button():
     select_value = OptionMenu(window, variable, *options)
     btn_rashod = Button(window, text='Добавить расходы', command=add_type_rashod)
     btn_dohod = Button(window, text='Добавить доходы', command=add_type_dohod)
-    btn_result = Button(window,text='Рассчитать результат', command=result)
+    btn_result = Button(window,text='Рассчитать результат', command=print_result)
     ent_rashod_dohod = Entry(window, width=40)
     label_text_select = Label(text='Выбирите нужный пункт расходов и доходов:')
     label_text_select_type = Label(text='Введите сумму расходов или доходов:')
     label_text_result = Label(text='Результаты:',)
     label_text_dohod = Label(text='Сумма доходов')
     label_text_summ = Label(text='ИТОГО')
-    text_result = Text(width=30,height=10)
+    text_result = Text(width=50,height=10)
+    scroll = Scrollbar(window, orient="vertical",command=text_result.yview)
+    text_result.config(yscrollcommand=scroll.set)
 
     select_value.place(x=1, y=25)
     btn_rashod.place(x=1, y=110)
@@ -134,14 +153,10 @@ def get_button():
     btn_result.place(x=1,y=400)
     label_text_result.place(x=1, y=200)
     text_result.place(x=1, y=230)
-    #label_text_summ.place(relx=0.25, rely=0.25)
-    #label_sum_dohod.place(relx=0.25, rely=0.25)
-    #label_sum_rashod.place(relx=0.25, rely=0.25)
-    #label_summ.place(relx=0.25, rely=0.25)
     ent_rashod_dohod.place(x=1,y=85)
     label_text_select.place(x=1,y=0)
     label_text_select_type.place(x=1,y=60)
-
+    scroll.place(x=400,y=230)
 
 
 def write_file():
@@ -160,7 +175,7 @@ def main():
     window.title('Бюджет семьи')
     window.geometry('600x480')
     
-    get_button()
+    create_widget()
 
     window.mainloop()
 
