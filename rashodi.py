@@ -11,7 +11,7 @@ import sys
 #переменная названия файла
 file_task = 'data_file.txt'
 #формат даты
-date_format = '%Y.%m.%d '
+date_format = '%Y.%m.%d'
 #список доходов
 lst_dohod = []
 #список расходов
@@ -19,16 +19,19 @@ lst_rashod = []
 window = None
 ent_rashod = None
 ent_dohod = None
-dt_start  = datetime.date.today().strftime(date_format)
 
 
 if os.path.exists(file_task):
     #если файл существует
     #загружаем список расходов
-    with open (file_task, encoding='utf-8') as f:
+    with open (file_task, 'r', encoding='utf-8') as f:
         try:
             #перехватываем ошибки
             tasks = json.load(f)
+            for task in tasks:
+                #преобразуем дату в формат datetime
+                task['data_create'] = ( 
+                    datetime.date.strptime(task['data_create'], date_format))
 
         except Exception:
             tasks = []        
@@ -58,56 +61,53 @@ def add_type_rashod():
     '''
     #перехватываем ошибку неправильного ввода
     try:
-        new_task = {
-            'cost':int(ent_rashod_dohod.get()),
-            'type_item': '-',
-            'type_value': variable.get(),
-            'data_create': dt_start
-            }
-        ent_rashod_dohod.delete(0, END)
-        for task in tasks:
-            if new_task['type_value'] in task['type_value']:
-                new_task['cost'] += task['cost']
-        
-        tasks.append(new_task) 
-        write_file()  
+        result_cost = int(ent_rashod_dohod.get())
+
     except ValueError:
         mb.showerror('Ошибка','Должно быть введено число!')
+       
+    new_task = {
+            'cost':result_cost,
+            'type_item': '-',
+            'type_value': variable.get(),
+            'data_create': datetime.date.today()
+            }
+    ent_rashod_dohod.delete(0, END)
+    tasks.append(new_task) 
+    write_file()  
 
-    
+   
+def sort_result():
+    pass
+
                
-
-
 def add_type_dohod():
     '''добавляем в список словарь с нашими доходами
     '''
-    #перехватываем ошибку неправильного ввода
+    #перехватываем ошибку неправильного ввода 
     try:
-        new_task = {
-            'cost':int(ent_rashod_dohod.get()),
-            'type_item': '+',
-            'type_value': variable.get(),
-            'data_create': dt_start 
-            }
-        ent_rashod_dohod.delete(0, END)
-        for task in tasks:
-            if new_task['type_value'] in task['type_value']:
-                new_task['cost'] += task['cost']
-        
-        tasks.append(new_task)
-        write_file()
-    
+        result_cost = int(ent_rashod_dohod.get())
+
     except ValueError:
         mb.showerror('Ошибка','Должно быть введено число!')
-
-    ent_rashod_dohod.delete(0, END)   
-
+    
+    new_task = {
+            'cost': result_cost,
+            'type_item': '+',
+            'type_value': variable.get(),
+            'data_create': datetime.date.today()
+            }
+    ent_rashod_dohod.delete(0, END)
+    tasks.append(new_task)
+    write_file()
+    
+    
 
 def print_result():
     
     for task in tasks:
         for key in task:
-            value = str(task[key])  + ' ' 
+            value = str(task[key])  + '--> ' 
             text_result.insert(1.0 ,value)
     
     clear_list()
@@ -144,7 +144,7 @@ def create_widget():
     label_text_dohod = Label(text='Сумма доходов')
     label_text_summ = Label(text='ИТОГО')
     text_result = Text(width=50,height=10)
-    scroll = Scrollbar(window, orient="vertical",command=text_result.yview)
+    scroll = Scrollbar(window, orient="vertical", command=text_result.yview)
     text_result.config(yscrollcommand=scroll.set)
 
     select_value.place(x=1, y=25)
@@ -156,17 +156,24 @@ def create_widget():
     ent_rashod_dohod.place(x=1,y=85)
     label_text_select.place(x=1,y=0)
     label_text_select_type.place(x=1,y=60)
-    scroll.place(x=400,y=230)
+    scroll.place(x=400,y=230,height=180)
 
 
 def write_file():
     '''функция загрузки в файл 
         наших значений 
     '''
+    write_task = []
+    for task in tasks:
+        copy_task = {
+            'cost': task['cost'],
+            'type_item': task['type_item'],
+            'type_value': task['type_value'],
+            'data_create': task['data_create'].strftime(date_format) 
+            }
+        write_task.append(copy_task)
     with open (file_task, 'w') as f:
-        data = json.dump(tasks, f)
-
-    print_result()     
+        data = json.dump(write_task, f,ensure_ascii=False)     
 
  
 def main():
