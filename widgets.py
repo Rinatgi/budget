@@ -1,6 +1,6 @@
 from tkinter import Tk, Menu, Button, Entry, Label, LabelFrame, OptionMenu, StringVar, END, messagebox as mb, Scrollbar, Listbox,EXTENDED
 import ui
-import settings
+import article
 
 def create_widget(window):
     '''функция создания кнопок и их активация
@@ -23,10 +23,10 @@ def create_widget(window):
     # значение по умолчанию
     variable.set(options[0])
     select_value = OptionMenu(window, variable, *options)
-    btn_rashod = Button(window, text='Добавить расходы', command=settings.add_type_rashod)
-    btn_dohod = Button(window, text='Добавить доходы', command=settings.add_type_dohod)
-    btn_result = Button(window,text='Рассчитать результат', command=settings.print_result)
-    btn_delete = Button(window,text='Удалить',command=settings.del_article)
+    btn_rashod = Button(window, text='Добавить расходы', command=article.add_type_rashod)
+    btn_dohod = Button(window, text='Добавить доходы', command=article.add_type_dohod)
+    btn_result = Button(window,text='Сохраниь результаты')
+    btn_delete = Button(window,text='Удалить',command=article.del_article)
     ent_rashod_dohod = Entry(window, width=40)
     label_text_select = Label(text='Выбирите нужный пункт расходов и доходов:')
     label_text_select_type = Label(text='Введите сумму расходов или доходов:')

@@ -1,11 +1,11 @@
 ''' Программа контроля 
 рахода семейного бюджета'''
-from tkinter import Tk, Menu, Button, Entry, Label, LabelFrame, OptionMenu, StringVar, END, messagebox as mb, Text, Scrollbar,Listbox
+from tkinter import  END, messagebox as mb
 import datetime
 import widgets
 import db
 
-tasks = db.read_file()
+tasks = db.get_article()
 
 def add_type_rashod():
     '''добавляем в спикок словарь с нашими расходами
@@ -16,16 +16,15 @@ def add_type_rashod():
 
     except ValueError as err:
         mb.showerror('Ошибка','Должно быть введено число!')
-        print (err)
     new_task = {
             'cost':result_cost,
             'type_item': '-',
             'type_value': widgets.variable.get(),
-            'data_create': datetime.date.today()
+            'data_create': datetime.datetime.today()
             }
-    widgets.ent_rashod_dohod.delete(0, END)
+    #widgets.ent_rashod_dohod.delete(0, END)
     tasks.append(new_task)
-    db.write_file() 
+    db.write_article() 
  
 
                
@@ -43,27 +42,35 @@ def add_type_dohod():
             'cost': result_cost,
             'type_item': '+',
             'type_value': widgets.variable.get(),
-            'data_create': datetime.date.today()
+            'data_create': datetime.datetime.today()
             }
-    widgets.ent_rashod_dohod.delete(0, END)
+    #widgets.ent_rashod_dohod.delete(0, END)
     tasks.append(new_task)
-    db.write_file()   
+    db.write_article()   
     
 
-def print_result():
-    
+def print_article():
+    '''вводим наши все записи
+        в окно
+    '''
     for task in tasks:
         for key, value in task.items():
-            s = '{} --> {}'.format(key, value)
+            s = '{:30} {}'.format(key, value)
             widgets.text_result.insert(0 ,s)
        
 
 
 def del_article():
+    '''удалаляем в окне не нужный
+        пунк дохода или расхода.
+    '''
     select = list(widgets.text_result.curselection())
     select.reverse()
     for i in select:
         widgets.text_result.delete(i)
+    remaining_articles = widgets.text_result.get(0, END)  
+     
+    print(remaining_articles)  
 
 
  
