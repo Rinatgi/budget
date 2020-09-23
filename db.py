@@ -29,10 +29,10 @@ def get_articles():
     return articles
 
 
-def write_articles():
+def write_articles(articles):
     '''функция загрузки в файл нашего списка 
     '''
-    articles = get_articles()
+
     write_article = []
     for article in articles:
         copy_article = {
@@ -43,5 +43,5 @@ def write_articles():
             }
         write_article.append(copy_article)
     with open (setting.ARTICLE_FILE_NAME, 'w', encoding='utf-8') as f:
-        data = json.dump(write_article, f,ensure_ascii=False, sort_keys=True) 
+        data = json.dump(write_article,f, ensure_ascii=False, sort_keys=True) 
 

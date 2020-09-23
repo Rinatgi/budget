@@ -70,7 +70,7 @@ def add_type_rashod():
         result_cost = int(ent_rashod_dohod.get())
 
     except ValueError as err:
-        mb.showerror('Ошибка','Должно быть введено число!')
+        mb.showerror('Ошибка', 'Должно быть введено число!')
     new_article = {
             'cost':result_cost,
             'type_item': '-',
@@ -79,8 +79,7 @@ def add_type_rashod():
             }
     #widgets.ent_rashod_dohod.delete(0, END)
     articles.append(new_article)
-    print (articles)
-    db.write_articles() 
+    db.write_articles(articles) 
     
 
 def add_type_dohod():
@@ -93,7 +92,7 @@ def add_type_dohod():
         result_cost = int(ent_rashod_dohod.get())
 
     except ValueError:
-        mb.showerror('Ошибка','Должно быть введено число!')
+        mb.showerror('Ошибка', 'Должно быть введено число!')
     
     new_article = {
             'cost': result_cost,
@@ -103,6 +102,5 @@ def add_type_dohod():
             }
     #widgets.ent_rashod_dohod.delete(0, END)
     articles.append(new_article)
-    print (articles)
-    db.write_articles()   
+    db.write_articles(articles)   
     

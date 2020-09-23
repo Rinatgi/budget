@@ -15,7 +15,7 @@ def print_article():
     for article in articles:
         for key, value in article.items():
             s = '{} {}'.format(key, value)
-            widgets.text_result.insert(0 ,s)
+            widgets.text_result.insert(0, s)
        
 
 
