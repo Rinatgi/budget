@@ -2,7 +2,6 @@ import os
 import datetime
 import sys
 import json
-import article
 import setting
 
 

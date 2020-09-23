@@ -1,6 +1,5 @@
 from tkinter import Tk, Menu, Button, Entry, Label, LabelFrame, OptionMenu, StringVar, END, messagebox as mb, Scrollbar, Listbox,EXTENDED
 import ui
-import article
 import db
 import datetime
 
@@ -35,7 +34,7 @@ def create_widget(window):
     btn_rashod = Button(window, text='Добавить расходы', command=add_type_rashod)
     btn_dohod = Button(window, text='Добавить доходы', command=add_type_dohod)
     btn_result = Button(window,text='Сохраниь результаты')
-    btn_delete = Button(window,text='Удалить',command=article.del_article)
+    btn_delete = Button(window,text='Удалить',command=del_article)
     ent_rashod_dohod = Entry(window, width=40)
     label_text_select = Label(text='Выбирите нужный пункт расходов и доходов:')
     label_text_select_type = Label(text='Введите сумму расходов или доходов:')
@@ -63,7 +62,6 @@ def create_widget(window):
 def add_type_rashod():
     '''добавляем в спикок словарь с нашими расходами
     '''
-    db.get_articles()
     articles = db.get_articles()
     #перехватываем ошибку неправильного ввода
     try:
@@ -85,7 +83,6 @@ def add_type_rashod():
 def add_type_dohod():
     '''добавляем в список словарь с нашими доходами
     '''
-    db.get_articles()
     articles = db.get_articles()
     #перехватываем ошибку неправильного ввода 
     try:
@@ -103,4 +100,27 @@ def add_type_dohod():
     #widgets.ent_rashod_dohod.delete(0, END)
     articles.append(new_article)
     db.write_articles(articles)   
+
+
+def update_article_list() :
+    '''вводим наши все записи
+        в окно
+    '''
+    articles = db.get_articles()
+    for article in articles:
+        for key, value in article.items():
+            s = '{} {}'.format(key, value)
+            text_result.insert(0, s)
     
+
+def del_article():
+    '''удалаляем в окне не нужный
+        пунк дохода или расхода.
+    '''
+    select = list(text_result.curselection())
+    select.reverse()
+    for i in select:
+        text_result.delete(i)
+    remaining_articles = text_result.get(0, END)  
+     
+    print(remaining_articles)    

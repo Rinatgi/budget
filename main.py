@@ -1,11 +1,11 @@
 import ui
 import widgets
 import db
-import article
+
 
 window = ui.create_window()
 widgets.create_widget(window)
-article.print_article()
+widgets.update_article_list()
     
 window.mainloop()
 
