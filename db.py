@@ -6,42 +6,42 @@ import article
 import setting
 
 
-def get_article():
+def get_articles():
     '''функция чтения файла с нашими данными
     '''
-    if os.path.exists(setting.file_task):
+    if os.path.exists(setting.ARTICLE_FILE_NAME):
     #если файл существует
     #загружаем список расходов
-        with open (setting.file_task, 'r', encoding='utf-8') as f:
+        with open (setting.ARTICLE_FILE_NAME, 'r', encoding='utf-8') as f:
             try:
             #перехватываем ошибки
-                tasks = json.load(f)
-                for task in tasks:
+                articles = json.load(f)
+                for article in articles:
                 #преобразуем дату в формат datetime
-                    task['data_create'] = ( 
-                        datetime.datetime.strptime(task['data_create'], setting.date_format))
+                    article['data_create'] = ( 
+                        datetime.datetime.strptime(article['data_create'], setting.DATE_FORMAT))
 
             except Exception:
-                tasks = []        
+                articles = []        
     else:
-        tasks =[]
+        articles =[]
 
-    return tasks
+    return articles
 
 
-def write_article():
+def write_articles():
     '''функция загрузки в файл нашего списка 
     '''
-    tasks = article.add_type_rashod()
-    write_task = []
-    for task in tasks:
-        copy_task = {
-            'cost': task['cost'],
-            'type_item': task['type_item'],
-            'type_value': task['type_value'],
-            'data_create': task['data_create'].strftime(setting.date_format) 
+    articles = get_articles()
+    write_article = []
+    for article in articles:
+        copy_article = {
+            'cost': article['cost'],
+            'type_item': article['type_item'],
+            'type_value': article['type_value'],
+            'data_create': article['data_create'].strftime(setting.DATE_FORMAT) 
             }
-        write_task.append(copy_task)
-    with open (setting.file_task, 'w', encoding='utf-8') as f:
-        data = json.dump(write_task, f,ensure_ascii=False, sort_keys=True) 
+        write_article.append(copy_article)
+    with open (setting.ARTICLE_FILE_NAME, 'w', encoding='utf-8') as f:
+        data = json.dump(write_article, f,ensure_ascii=False, sort_keys=True) 
 

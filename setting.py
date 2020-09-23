@@ -1,4 +1,4 @@
 #переменная названия файла
-file_task = 'data_file.txt'
+ARTICLE_FILE_NAME = 'data_file.txt'
 #формат даты
-date_format = '%Y.%m.%d'
+DATE_FORMAT = '%Y.%m.%d'
