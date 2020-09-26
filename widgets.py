@@ -1,4 +1,4 @@
-from tkinter import Tk, Menu, Button, Entry, Label, LabelFrame, OptionMenu, StringVar, END, messagebox as mb, Scrollbar, Listbox,EXTENDED
+from tkinter import Tk, Menu, Button, Entry, Label, LabelFrame, OptionMenu, StringVar, END, messagebox as mb, Scrollbar, Listbox,EXTENDED,Frame,TOP
 import ui
 import db
 import datetime
@@ -28,35 +28,42 @@ def create_widget(window):
         'прочие расходы'
         ]
     variable = StringVar(window)
+    frame_1 = LabelFrame(window, text='Данные',height=300, width=600)
+    frame_2 = LabelFrame(window, text='Результаты', height=300, width=700)
+    # ширина экрана
+    w = window.winfo_screenwidth()
+    # высота экрана
+    h = window.winfo_screenheight()   
     # значение по умолчанию
     variable.set(options[0])
-    select_value = OptionMenu(window, variable, *options)
-    btn_rashod = Button(window, text='Добавить расходы', command=add_type_rashod)
-    btn_dohod = Button(window, text='Добавить доходы', command=add_type_dohod)
-    btn_result = Button(window,text='Сохраниь результаты')
-    btn_delete = Button(window,text='Удалить',command=del_article)
-    ent_rashod_dohod = Entry(window, width=40)
-    label_text_select = Label(text='Выбирите нужный пункт расходов и доходов:')
-    label_text_select_type = Label(text='Введите сумму расходов или доходов:')
-    label_text_result = Label(text='Результаты:',)
-    label_text_dohod = Label(text='Сумма доходов')
-    label_text_summ = Label(text='ИТОГО')
-    text_result = Listbox(width=50,height=10,selectmode=EXTENDED)
-    scroll = Scrollbar(window, orient="vertical", command=text_result.yview)
+    select_value = OptionMenu(frame_1, variable, *options)
+    btn_rashod = Button(frame_1, text='Добавить расходы', command=add_type_rashod, font = ('Arial' , 12))
+    btn_dohod = Button(frame_1, text='Добавить доходы', command=add_type_dohod, font = ('Arial' , 12))
+    btn_result = Button(frame_2, text='Сохраниь результаты', font = ('Arial' , 12))
+    btn_delete = Button(frame_2, text='Удалить', command=del_article, font = ('Arial' , 12))
+    ent_rashod_dohod = Entry(frame_1, width=40, font = ('Arial' , 12))
+    label_text_select = Label(frame_1, text='Выбирите нужный пункт расходов и доходов:', font = ('Arial' , 12))
+    label_text_select_type = Label(frame_1, text='Введите сумму расходов или доходов:', font = ('Arial' , 12))
+    label_text_result = Label(frame_1,text='Результаты:', font = ('Arial' , 12))
+    label_text_dohod = Label(frame_1,text='Сумма доходов', font = ('Arial' , 12))
+    label_text_summ = Label(frame_1,text='ИТОГО')
+    text_result = Listbox(frame_2,width=80,height=16,selectmode=EXTENDED)
+    scroll = Scrollbar(frame_2, orient="vertical", command=text_result.yview)
     text_result.config(yscrollcommand=scroll.set)
 
-    select_value.place(x=1, y=25)
-    btn_rashod.place(x=1, y=110)
-    btn_dohod.place(x=140, y=110)
-    btn_delete.place(x=140,y=400)
-    btn_result.place(x=1,y=400)
-    label_text_result.place(x=1, y=200)
-    text_result.place(x=1, y=230)
-    ent_rashod_dohod.place(x=1,y=85)
-    label_text_select.place(x=1,y=0)
-    label_text_select_type.place(x=1,y=60)
-    scroll.place(x=400,y=230,height=180)
-
+    select_value.place(relx=0.03, rely=0.15)
+    btn_rashod.place(relx=0.03, rely=0.70)
+    btn_dohod.place(relx=0.33, rely=0.70)
+    btn_delete.place(relx=0, rely=0.03)
+    btn_result.place(relx=0, rely=0.25)
+   # label_text_result.place(relx=0.5, rely=0.05)
+    text_result.place(relx=0.27, rely=0.01)
+    ent_rashod_dohod.place(relx=0.03, rely=0.55)
+    label_text_select.place(relx=0.03, rely=0.03)
+    label_text_select_type.place(relx=0.03, rely=0.40)
+    scroll.place(relx=0.96, rely=0.01, height=260)
+    frame_1.place(relx=0.02, rely=0.02)
+    frame_2.place(relx=0.47,rely= 0.02)
 
 
 def add_type_rashod():
