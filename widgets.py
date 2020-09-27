@@ -28,7 +28,7 @@ def create_widget(window):
         'прочие расходы'
         ]
     variable = StringVar(window)
-    frame_1 = LabelFrame(window, text='Данные',height=300, width=600)
+    frame_1 = LabelFrame(window, text='Данные', height=300, width=600)
     frame_2 = LabelFrame(window, text='Результаты', height=300, width=700)
     # ширина экрана
     w = window.winfo_screenwidth()
@@ -37,17 +37,17 @@ def create_widget(window):
     # значение по умолчанию
     variable.set(options[0])
     select_value = OptionMenu(frame_1, variable, *options)
-    btn_rashod = Button(frame_1, text='Добавить расходы', command=add_type_rashod, font = ('Arial' , 12))
-    btn_dohod = Button(frame_1, text='Добавить доходы', command=add_type_dohod, font = ('Arial' , 12))
-    btn_result = Button(frame_2, text='Сохраниь результаты', font = ('Arial' , 12))
-    btn_delete = Button(frame_2, text='Удалить', command=del_article, font = ('Arial' , 12))
-    ent_rashod_dohod = Entry(frame_1, width=40, font = ('Arial' , 12))
-    label_text_select = Label(frame_1, text='Выбирите нужный пункт расходов и доходов:', font = ('Arial' , 12))
-    label_text_select_type = Label(frame_1, text='Введите сумму расходов или доходов:', font = ('Arial' , 12))
-    label_text_result = Label(frame_1,text='Результаты:', font = ('Arial' , 12))
-    label_text_dohod = Label(frame_1,text='Сумма доходов', font = ('Arial' , 12))
-    label_text_summ = Label(frame_1,text='ИТОГО')
-    text_result = Listbox(frame_2,width=80,height=16,selectmode=EXTENDED)
+    btn_rashod = Button(frame_1, text='Добавить расходы', command=add_type_rashod, font = ('Arial', 12))
+    btn_dohod = Button(frame_1, text='Добавить доходы', command=add_type_dohod, font = ('Arial', 12))
+    btn_result = Button(frame_2, text='Сохраниь результаты', font = ('Arial', 12))
+    btn_delete = Button(frame_2, text='Удалить', command=del_article, font = ('Arial', 12))
+    ent_rashod_dohod = Entry(frame_1, width=40, font = ('Arial', 12))
+    label_text_select = Label(frame_1, text='Выбирите нужный пункт расходов и доходов:', font = ('Arial', 12))
+    label_text_select_type = Label(frame_1, text='Введите сумму расходов или доходов:', font = ('Arial', 12))
+    label_text_result = Label(frame_1, text='Результаты:', font = ('Arial', 12))
+    label_text_dohod = Label(frame_1, text='Сумма доходов', font = ('Arial', 12))
+    label_text_summ = Label(frame_1, text='ИТОГО')
+    text_result = Listbox(frame_2, width=53, height=13, selectmode=EXTENDED, font = ('Arial', 12))
     scroll = Scrollbar(frame_2, orient="vertical", command=text_result.yview)
     text_result.config(yscrollcommand=scroll.set)
 
@@ -63,7 +63,7 @@ def create_widget(window):
     label_text_select_type.place(relx=0.03, rely=0.40)
     scroll.place(relx=0.96, rely=0.01, height=260)
     frame_1.place(relx=0.02, rely=0.02)
-    frame_2.place(relx=0.47,rely= 0.02)
+    frame_2.place(relx=0.47, rely= 0.02)
 
 
 def add_type_rashod():
@@ -109,16 +109,23 @@ def add_type_dohod():
     db.write_articles(articles)   
 
 
-def update_article_list() :
+def update_article_list():
     '''вводим наши все записи
         в окно
-    '''
+    ''' 
+    index = 0 
     articles = db.get_articles()
     for article in articles:
-        for key, value in article.items():
-            s = '{} {}'.format(key, value)
-            text_result.insert(0, s)
-    
+        s = '{cost} {type_item} {type_value} {data_create}'.format(**article)
+        text_result.insert(0, s)
+        if article['type_item'] == '-':
+            text_result.itemconfig(index, bg='red')
+            
+        else:
+            text_result.itemconfig(index, bg='green')                
+    index += 1
+
+
 
 def del_article():
     '''удалаляем в окне не нужный
@@ -128,6 +135,5 @@ def del_article():
     select.reverse()
     for i in select:
         text_result.delete(i)
-    remaining_articles = text_result.get(0, END)  
-     
-    print(remaining_articles)    
+
+    return i    
