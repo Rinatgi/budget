@@ -47,7 +47,7 @@ def create_widget(window):
     label_text_result = Label(frame_1, text='Результаты:', font = ('Arial', 12))
     label_text_dohod = Label(frame_1, text='Сумма доходов', font = ('Arial', 12))
     label_text_summ = Label(frame_1, text='ИТОГО')
-    text_result = Listbox(frame_2, width=53, height=13, selectmode=EXTENDED, font = ('Arial', 12))
+    text_result = Listbox(frame_2, width=53, height=14, selectmode=EXTENDED, font = ('Arial', 12))
     scroll = Scrollbar(frame_2, orient="vertical", command=text_result.yview)
     text_result.config(yscrollcommand=scroll.set)
 
@@ -61,7 +61,7 @@ def create_widget(window):
     ent_rashod_dohod.place(relx=0.03, rely=0.55)
     label_text_select.place(relx=0.03, rely=0.03)
     label_text_select_type.place(relx=0.03, rely=0.40)
-    scroll.place(relx=0.96, rely=0.01, height=260)
+    scroll.place(relx=0.96, rely=0.01, height=270)
     frame_1.place(relx=0.02, rely=0.02)
     frame_2.place(relx=0.47, rely= 0.02)
 
@@ -131,9 +131,12 @@ def del_article():
     '''удалаляем в окне не нужный
         пунк дохода или расхода.
     '''
+    articles = db.get_articles()
     select = list(text_result.curselection())
     select.reverse()
     for i in select:
+        print(type(i))
         text_result.delete(i)
+        articles.pop(i) 
 
-    return i    
+    db.write_articles(articles)

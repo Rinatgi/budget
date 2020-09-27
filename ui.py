@@ -10,5 +10,6 @@ def create_window():
     h = window.winfo_screenheight() 
     window.title('Бюджет семьи')
     window.geometry('{}x{}'.format(w, h))
+    window.minsize(width=780, height=580)
     return window
  
