@@ -1,4 +1,5 @@
-from tkinter import Tk, Menu, Button, Entry, Label, LabelFrame, OptionMenu, StringVar, END, messagebox as mb, Scrollbar, Listbox,EXTENDED,Frame,TOP
+from tkinter import (Tk, Menu, Button, Entry, Label, LabelFrame, OptionMenu, 
+                    StringVar, END, messagebox as mb, Scrollbar, Listbox,EXTENDED,Frame,TOP, simpledialog)
 import ui
 import db
 import datetime
@@ -25,7 +26,8 @@ def create_widget(window):
         'мебель', 
         'крупная бытовая техника',
         'кафе, рестораны',
-        'прочие расходы'
+        'прочие расходы',
+        'Добавить свой вариант'
         ]
     variable = StringVar(window)
     frame_1 = LabelFrame(window, text='Данные', height=300, width=600)
@@ -38,6 +40,8 @@ def create_widget(window):
     # значение по умолчанию
     variable.set(options[0])
     select_value = OptionMenu(frame_1, variable, *options)
+    if variable.get() =='Добавить свой вариант':
+        variable = simpledialog.askstr(title='Введите свой вариант',)
     btn_rashod = Button(frame_1, text='Добавить расходы', command=add_type_rashod, font = ('Arial', 12))
     btn_dohod = Button(frame_1, text='Добавить доходы', command=add_type_dohod, font = ('Arial', 12))
     btn_result = Button(frame_2, text='Сохраниь результаты', font = ('Arial', 12))
@@ -79,6 +83,7 @@ def create_widget(window):
     frame_2.place(relx=0.47, rely= 0.02)
     frame_3.place(relx=0.02, rely= 0.50)
 
+
 def add_type_rashod():
     '''добавляем в спикок словарь с нашими расходами
     '''
@@ -97,7 +102,8 @@ def add_type_rashod():
             }
     #widgets.ent_rashod_dohod.delete(0, END)
     articles.append(new_article)
-    db.write_articles(articles) 
+    db.write_articles(articles)
+    update_article_list() 
     
 
 def add_type_dohod():
@@ -120,12 +126,14 @@ def add_type_dohod():
     #widgets.ent_rashod_dohod.delete(0, END)
     articles.append(new_article)
     db.write_articles(articles)   
+    update_article_list()
 
 
 def update_article_list():
-    '''вводим наши все записи
+    '''выводим наши все записи
         в окно
     ''' 
+    text_result.delete(0, END)
     index = 0 
     articles = db.get_articles()
     for article in articles:
@@ -137,7 +145,6 @@ def update_article_list():
         else:
             text_result.itemconfig(index, bg='green')                
     index += 1
-
 
 
 def del_article():
@@ -153,3 +160,5 @@ def del_article():
         articles.pop(i) 
 
     db.write_articles(articles)
+    
+    
