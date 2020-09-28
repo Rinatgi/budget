@@ -29,7 +29,8 @@ def create_widget(window):
         ]
     variable = StringVar(window)
     frame_1 = LabelFrame(window, text='Данные', height=300, width=600)
-    frame_2 = LabelFrame(window, text='Результаты', height=300, width=700)
+    frame_2 = LabelFrame(window, text='Списки расходов и доходов', height=300, width=700)
+    frame_3 = LabelFrame(window, text='Результаты', height=300, width=600)
     # ширина экрана
     w = window.winfo_screenwidth()
     # высота экрана
@@ -47,10 +48,16 @@ def create_widget(window):
     label_text_result = Label(frame_1, text='Результаты:', font = ('Arial', 12))
     label_text_dohod = Label(frame_1, text='Сумма доходов', font = ('Arial', 12))
     label_text_summ = Label(frame_1, text='ИТОГО')
+    label_text_mouth = Label(frame_3, text='Расходы за тeкущий месяц:', font = ('Arial', 10))
+    label_text_today = Label(frame_3, text='Расходы за день:', font = ('Arial', 10))
+    label_text_year = Label(frame_3, text='Расходы за год:', font = ('Arial', 10))
     text_result = Listbox(frame_2, width=53, height=14, selectmode=EXTENDED, font = ('Arial', 12))
     scroll = Scrollbar(frame_2, orient="vertical", command=text_result.yview)
     text_result.config(yscrollcommand=scroll.set)
-
+    text_result_mouth = Listbox(frame_3, width=15, height=1, font = ('Arial', 10))
+    text_result_today = Listbox(frame_3, width=15, height=1, font = ('Arial', 10))
+    text_result_year = Listbox(frame_3, width=15, height=1, font = ('Arial', 10))
+    
     select_value.place(relx=0.03, rely=0.15)
     btn_rashod.place(relx=0.03, rely=0.70)
     btn_dohod.place(relx=0.33, rely=0.70)
@@ -58,13 +65,19 @@ def create_widget(window):
     btn_result.place(relx=0, rely=0.25)
    # label_text_result.place(relx=0.5, rely=0.05)
     text_result.place(relx=0.27, rely=0.01)
+    text_result_mouth.place(relx=0.33, rely=0.03)
+    text_result_today.place(relx=0.33, rely=0.12)
+    text_result_year.place(relx=0.33, rely=0.21)
     ent_rashod_dohod.place(relx=0.03, rely=0.55)
     label_text_select.place(relx=0.03, rely=0.03)
     label_text_select_type.place(relx=0.03, rely=0.40)
+    label_text_mouth.place(relx=0.03,rely=0.03)
+    label_text_today.place(relx=0.03,rely=0.12)
+    label_text_year.place(relx=0.03,rely=0.21)
     scroll.place(relx=0.96, rely=0.01, height=270)
     frame_1.place(relx=0.02, rely=0.02)
     frame_2.place(relx=0.47, rely= 0.02)
-
+    frame_3.place(relx=0.02, rely= 0.50)
 
 def add_type_rashod():
     '''добавляем в спикок словарь с нашими расходами
@@ -116,7 +129,7 @@ def update_article_list():
     index = 0 
     articles = db.get_articles()
     for article in articles:
-        s = '{cost} {type_item} {type_value} {data_create}'.format(**article)
+        s = '{cost} руб. {type_item} {type_value} {data_create}'.format(**article)
         text_result.insert(0, s)
         if article['type_item'] == '-':
             text_result.itemconfig(index, bg='red')
