@@ -1,5 +1,5 @@
 from tkinter import (Tk, Menu, Button, Entry, Label, LabelFrame, OptionMenu, 
-                    StringVar, END, messagebox as mb, Scrollbar, Listbox,EXTENDED,Frame,TOP, simpledialog)
+                    StringVar, END, messagebox as mb, Scrollbar, Listbox,EXTENDED,Frame,TOP, simpledialog, Toplevel,LEFT, N, Y, X)
 import ui
 import db
 import datetime
@@ -27,7 +27,6 @@ def create_widget(window):
         'крупная бытовая техника',
         'кафе, рестораны',
         'прочие расходы',
-        'Добавить свой вариант'
         ]
     variable = StringVar(window)
     frame_1 = LabelFrame(window, text='Данные', height=300, width=600)
@@ -40,10 +39,9 @@ def create_widget(window):
     # значение по умолчанию
     variable.set(options[0])
     select_value = OptionMenu(frame_1, variable, *options)
-    if variable.get() =='Добавить свой вариант':
-        variable = simpledialog.askstr(title='Введите свой вариант',)
     btn_rashod = Button(frame_1, text='Добавить расходы', command=add_type_rashod, font = ('Arial', 12))
     btn_dohod = Button(frame_1, text='Добавить доходы', command=add_type_dohod, font = ('Arial', 12))
+    btn_append_item = Button(frame_1, text='Добавить свой вариант', command=create_mine_item, font = ('Arial', 10))
     btn_result = Button(frame_2, text='Сохраниь результаты', font = ('Arial', 12))
     btn_delete = Button(frame_2, text='Удалить', command=del_article, font = ('Arial', 12))
     ent_rashod_dohod = Entry(frame_1, width=40, font = ('Arial', 12))
@@ -66,8 +64,9 @@ def create_widget(window):
     btn_rashod.place(relx=0.03, rely=0.70)
     btn_dohod.place(relx=0.33, rely=0.70)
     btn_delete.place(relx=0, rely=0.03)
+    btn_append_item.place(relx=0.30,rely=0.15)
     btn_result.place(relx=0, rely=0.25)
-   # label_text_result.place(relx=0.5, rely=0.05)
+   #label_text_result.place(relx=0.5, rely=0.05)
     text_result.place(relx=0.27, rely=0.01)
     text_result_mouth.place(relx=0.33, rely=0.03)
     text_result_today.place(relx=0.33, rely=0.12)
@@ -160,5 +159,74 @@ def del_article():
         articles.pop(i) 
 
     db.write_articles(articles)
+
+def create_mine_item():
+    '''Создаем окно, где можно
+    добавлять свой пукт расходов или доходов
+    '''
+    global lbox, entry
+    top = Toplevel()  
+    #фокусируем наше окно
+    #top.focus_set()
+    #делаем его модальным(чтобы нельзя было переключиться на главное окно)
+    #top.grab_set()
+    #мы задаем приложению команду, что пока не будет закрыто окно top пользоваться другим окном будет нельзя.
+    #top.wait_window()
+    lbox = Listbox(top, selectmode=EXTENDED)
+    lbox.pack(side=LEFT)
+    scroll = Scrollbar(top, command=lbox.yview)
+    scroll.pack(side=LEFT, fill=Y)
+    lbox.config(yscrollcommand=scroll.set) 
+    f = Frame(top)
+    f.pack(side=LEFT, padx=10)
+    entry = Entry(f)
+    entry.pack(anchor=N)
+    item_add = Button(f, text="Добавить", command=append_list_item)
+    item_add.pack(fill=X)
+    item_del = Button(f, text="Удалить", command=del_list_item)
+    item_del.pack(fill=X)
+    list_save = Button(f, text="Сохранить", command=db.write_article_items)
+    list_save.pack(fill=X)
+    update_article_option()
+
+
+def append_list_item():
+    '''добавляем в окно с нашим списком новое значение
+    расхода или дохода
+    '''
+    lbox.insert(END, entry.get())
+    entry.delete(0, END)
+
+
+def add_list_item():
+    '''добавляем в наш основной список,новые добавленные
+    пользователем значения, которые будут записаны в наш файл  
+    '''
+    articles_items = db.get_articles_items()
+    article_item = lbox.get(0, END)
+    for item in article_item:
+        if (item in articles_items) == False:
+            articles_items.append(item)
+    return articles_items
+1
+
+def update_article_option():
+    '''выводит наши значения пуков 
+    расходов и доходов в окно
+    '''
+    lbox.delete(0, END)
+    articles = db.get_articles_items()
+    for article in articles:
+        lbox.insert(0, article)
+
+
+def del_list_item():
+    '''удаляем не нужный пункт расходов или доходов
+    '''
+    select = list(lbox.curselection())
+    select.reverse()
+    for i in select:
+        lbox.delete(i)    
+    
     
     
