@@ -16,21 +16,10 @@ def create_widget(window):
     '''
     global ent_rashod_dohod, variable, options, text_result
 
-    options =[
-        'продукты',
-        'авто и ГСМ',
-        'жкх',
-        'одежда',
-        'зарплата', 
-        'премия или подарок', 
-        'мебель', 
-        'крупная бытовая техника',
-        'кафе, рестораны',
-        'прочие расходы',
-        ]
+    options = db.get_articles_items()
     variable = StringVar(window)
     frame_1 = LabelFrame(window, text='Данные', height=300, width=600)
-    frame_2 = LabelFrame(window, text='Списки расходов и доходов', height=300, width=700)
+    frame_2 = LabelFrame(window, text='Списки расходов и доходов', height=500, width=700)
     frame_3 = LabelFrame(window, text='Результаты', height=300, width=600)
     # ширина экрана
     w = window.winfo_screenwidth()
@@ -39,35 +28,35 @@ def create_widget(window):
     # значение по умолчанию
     variable.set(options[0])
     select_value = OptionMenu(frame_1, variable, *options)
-    btn_rashod = Button(frame_1, text='Добавить расходы', command=add_type_rashod, font = ('Arial', 12))
-    btn_dohod = Button(frame_1, text='Добавить доходы', command=add_type_dohod, font = ('Arial', 12))
-    btn_append_item = Button(frame_1, text='Добавить свой вариант', command=create_mine_item, font = ('Arial', 10))
-    btn_result = Button(frame_2, text='Сохраниь результаты', font = ('Arial', 12))
-    btn_delete = Button(frame_2, text='Удалить', command=del_article, font = ('Arial', 12))
-    ent_rashod_dohod = Entry(frame_1, width=40, font = ('Arial', 12))
-    label_text_select = Label(frame_1, text='Выбирите нужный пункт расходов и доходов:', font = ('Arial', 12))
-    label_text_select_type = Label(frame_1, text='Введите сумму расходов или доходов:', font = ('Arial', 12))
-    label_text_result = Label(frame_1, text='Результаты:', font = ('Arial', 12))
-    label_text_dohod = Label(frame_1, text='Сумма доходов', font = ('Arial', 12))
+    btn_rashod = Button(frame_1, text='Добавить расходы', command=add_type_rashod, font=('Arial', 12))
+    btn_dohod = Button(frame_1, text='Добавить доходы', command=add_type_dohod, font=('Arial', 12))
+    btn_append_item = Button(frame_1, text='Добавить свой вариант', command=create_mine_item, font=('Arial', 10))
+    btn_result = Button(frame_2, text='Сохраниь результаты', font=('Arial', 12))
+    btn_delete = Button(frame_2, text='Удалить', command=del_article, font=('Arial', 12))
+    ent_rashod_dohod = Entry(frame_1, width=40, font=('Arial', 12))
+    label_text_select = Label(frame_1, text='Выбирите нужный пункт расходов и доходов:', font=('Arial', 12))
+    label_text_select_type = Label(frame_1, text='Введите сумму расходов или доходов:', font=('Arial', 12))
+    label_text_result = Label(frame_1, text='Результаты:', font=('Arial', 12))
+    label_text_dohod = Label(frame_1, text='Сумма доходов', font=('Arial', 12))
     label_text_summ = Label(frame_1, text='ИТОГО')
-    label_text_mouth = Label(frame_3, text='Расходы за тeкущий месяц:', font = ('Arial', 10))
-    label_text_today = Label(frame_3, text='Расходы за день:', font = ('Arial', 10))
-    label_text_year = Label(frame_3, text='Расходы за год:', font = ('Arial', 10))
-    text_result = Listbox(frame_2, width=53, height=14, selectmode=EXTENDED, font = ('Arial', 12))
+    label_text_mouth = Label(frame_3, text='Расходы за тeкущий месяц:', font=('Arial', 10))
+    label_text_today = Label(frame_3, text='Расходы за день:', font=('Arial', 10))
+    label_text_year = Label(frame_3, text='Расходы за год:', font=('Arial', 10))
+    text_result = Listbox(frame_2, width=65, height=20, selectmode=EXTENDED, font=('Arial', 12))
     scroll = Scrollbar(frame_2, orient="vertical", command=text_result.yview)
     text_result.config(yscrollcommand=scroll.set)
-    text_result_mouth = Listbox(frame_3, width=15, height=1, font = ('Arial', 10))
-    text_result_today = Listbox(frame_3, width=15, height=1, font = ('Arial', 10))
-    text_result_year = Listbox(frame_3, width=15, height=1, font = ('Arial', 10))
+    text_result_mouth = Listbox(frame_3, width=15, height=1, font=('Arial', 10))
+    text_result_today = Listbox(frame_3, width=15, height=1, font=('Arial', 10))
+    text_result_year = Listbox(frame_3, width=15, height=1, font=('Arial', 10))
     
     select_value.place(relx=0.03, rely=0.15)
     btn_rashod.place(relx=0.03, rely=0.70)
     btn_dohod.place(relx=0.33, rely=0.70)
-    btn_delete.place(relx=0, rely=0.03)
+    btn_delete.place(relx=0.5, rely=0.90)
     btn_append_item.place(relx=0.30,rely=0.15)
-    btn_result.place(relx=0, rely=0.25)
+    btn_result.place(relx=0.7, rely=0.90)
    #label_text_result.place(relx=0.5, rely=0.05)
-    text_result.place(relx=0.27, rely=0.01)
+    text_result.place(relx=0.10, rely=0.01)
     text_result_mouth.place(relx=0.33, rely=0.03)
     text_result_today.place(relx=0.33, rely=0.12)
     text_result_year.place(relx=0.33, rely=0.21)
@@ -226,7 +215,8 @@ def del_list_item():
     select = list(lbox.curselection())
     select.reverse()
     for i in select:
-        lbox.delete(i)    
+        lbox.delete(i) 
+    db.write_article_items()       
     
     
     
