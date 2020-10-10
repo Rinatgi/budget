@@ -1,9 +1,13 @@
 from tkinter import (Tk, Menu, Button, Entry, Label, LabelFrame, OptionMenu, 
-                    StringVar, END, messagebox as mb, Scrollbar, Listbox,EXTENDED,Frame,TOP, simpledialog, Toplevel,LEFT, N, Y, X)
+                    StringVar, END, messagebox as mb, Scrollbar, Listbox,EXTENDED,
+                    Frame,TOP, simpledialog, Toplevel,LEFT, N, Y, X)
 import ui
 import db
 import datetime
-
+import category
+import setting
+import result
+from tkinter.ttk import Combobox
 
 ent_rashod_dohod = None
 variable = None
@@ -16,11 +20,17 @@ def create_widget(window):
     '''
     global ent_rashod_dohod, variable, options, text_result
 
-    options = db.get_articles_items()
+    options = setting.CATEGORY
     variable = StringVar(window)
     frame_1 = LabelFrame(window, text='Данные', height=300, width=600)
     frame_2 = LabelFrame(window, text='Списки расходов и доходов', height=500, width=700)
-    frame_3 = LabelFrame(window, text='Результаты', height=300, width=600)
+    frame_3 = LabelFrame(window, text='Результаты', height=200, width=700)
+    combo_category = Combobox(frame_2)
+    combo_type = Combobox(frame_2)
+    combo_category['values'] = setting.CATEGORY
+    combo_type['values'] = setting.TYPE_VALUE
+    combo_category.current(0)
+    combo_type.current(0)
     # ширина экрана
     w = window.winfo_screenwidth()
     # высота экрана
@@ -30,8 +40,8 @@ def create_widget(window):
     select_value = OptionMenu(frame_1, variable, *options)
     btn_rashod = Button(frame_1, text='Добавить расходы', command=add_type_rashod, font=('Arial', 12))
     btn_dohod = Button(frame_1, text='Добавить доходы', command=add_type_dohod, font=('Arial', 12))
-    btn_append_item = Button(frame_1, text='Добавить свой вариант', command=create_mine_item, font=('Arial', 10))
-    btn_result = Button(frame_2, text='Сохраниь результаты', font=('Arial', 12))
+    btn_append_item = Button(frame_1, text='Добавить свой вариант', command=category.create_window_category_change, font=('Arial', 10))
+    btn_result = Button(frame_2, text='Oтсортировать', font=('Arial', 12), command=sort.sort_article_list)
     btn_delete = Button(frame_2, text='Удалить', command=del_article, font=('Arial', 12))
     ent_rashod_dohod = Entry(frame_1, width=40, font=('Arial', 12))
     label_text_select = Label(frame_1, text='Выбирите нужный пункт расходов и доходов:', font=('Arial', 12))
@@ -39,38 +49,40 @@ def create_widget(window):
     label_text_result = Label(frame_1, text='Результаты:', font=('Arial', 12))
     label_text_dohod = Label(frame_1, text='Сумма доходов', font=('Arial', 12))
     label_text_summ = Label(frame_1, text='ИТОГО')
-    label_text_mouth = Label(frame_3, text='Расходы за тeкущий месяц:', font=('Arial', 10))
-    label_text_today = Label(frame_3, text='Расходы за день:', font=('Arial', 10))
-    label_text_year = Label(frame_3, text='Расходы за год:', font=('Arial', 10))
+    label_text_expence = Label(frame_3, text='Расходы', font=('Arial', 12))
+    label_text_income = Label(frame_3, text='Доходы', font=('Arial', 12))
+    label_text_all = Label(frame_3, text='Итого', font=('Arial', 12))
     text_result = Listbox(frame_2, width=65, height=20, selectmode=EXTENDED, font=('Arial', 12))
     scroll = Scrollbar(frame_2, orient="vertical", command=text_result.yview)
     text_result.config(yscrollcommand=scroll.set)
-    text_result_mouth = Listbox(frame_3, width=15, height=1, font=('Arial', 10))
-    text_result_today = Listbox(frame_3, width=15, height=1, font=('Arial', 10))
-    text_result_year = Listbox(frame_3, width=15, height=1, font=('Arial', 10))
+    text_result_expence = Listbox(frame_3, width=15, height=1, font=('Arial', 13))
+    text_result_income = Listbox(frame_3, width=15, height=1, font=('Arial', 13))
+    text_result_all = Listbox(frame_3, width=15, height=1, font=('Arial', 13))
     
     select_value.place(relx=0.03, rely=0.15)
     btn_rashod.place(relx=0.03, rely=0.70)
     btn_dohod.place(relx=0.33, rely=0.70)
-    btn_delete.place(relx=0.5, rely=0.90)
+    btn_delete.place(relx=0.55, rely=0.90)
     btn_append_item.place(relx=0.30,rely=0.15)
-    btn_result.place(relx=0.7, rely=0.90)
+    btn_result.place(relx=0.75, rely=0.90)
    #label_text_result.place(relx=0.5, rely=0.05)
-    text_result.place(relx=0.10, rely=0.01)
-    text_result_mouth.place(relx=0.33, rely=0.03)
-    text_result_today.place(relx=0.33, rely=0.12)
-    text_result_year.place(relx=0.33, rely=0.21)
+    text_result.place(relx=0.10, rely=0.09)
+    text_result_expence.place(relx=0.33, rely=0.03)
+    text_result_income.place(relx=0.33, rely=0.18)
+    text_result_all.place(relx=0.33, rely=0.33)
     ent_rashod_dohod.place(relx=0.03, rely=0.55)
     label_text_select.place(relx=0.03, rely=0.03)
     label_text_select_type.place(relx=0.03, rely=0.40)
-    label_text_mouth.place(relx=0.03,rely=0.03)
-    label_text_today.place(relx=0.03,rely=0.12)
-    label_text_year.place(relx=0.03,rely=0.21)
-    scroll.place(relx=0.96, rely=0.01, height=270)
+    label_text_expence.place(relx=0.03,rely=0.03)
+    label_text_income.place(relx=0.03,rely=0.18)
+    label_text_all.place(relx=0.03,rely=0.33)
+    scroll.place(relx=0.95, rely=0.09, height=380)
     frame_1.place(relx=0.02, rely=0.02)
     frame_2.place(relx=0.47, rely= 0.02)
-    frame_3.place(relx=0.02, rely= 0.50)
-
+    frame_3.place(relx=0.47, rely= 0.70)
+    combo_category.place(relx=0.10, rely=0.02)
+    combo_type.place(relx=0.36, rely=0.02)
+    show_result(text_result_income, text_result_expence, text_result_all)
 
 def add_type_rashod():
     '''добавляем в спикок словарь с нашими расходами
@@ -149,74 +161,21 @@ def del_article():
 
     db.write_articles(articles)
 
-def create_mine_item():
-    '''Создаем окно, где можно
-    добавлять свой пукт расходов или доходов
+
+def del_article_list():
+
+    text_result.delete(0, END)
+
+
+def show_result(text_result_income, text_result_expence, text_result_all):
+    '''Выводим суммы доходоб расходов и общий результат
     '''
-    global lbox, entry
-    top = Toplevel()  
-    #фокусируем наше окно
-    #top.focus_set()
-    #делаем его модальным(чтобы нельзя было переключиться на главное окно)
-    #top.grab_set()
-    #мы задаем приложению команду, что пока не будет закрыто окно top пользоваться другим окном будет нельзя.
-    #top.wait_window()
-    lbox = Listbox(top, selectmode=EXTENDED)
-    lbox.pack(side=LEFT)
-    scroll = Scrollbar(top, command=lbox.yview)
-    scroll.pack(side=LEFT, fill=Y)
-    lbox.config(yscrollcommand=scroll.set) 
-    f = Frame(top)
-    f.pack(side=LEFT, padx=10)
-    entry = Entry(f)
-    entry.pack(anchor=N)
-    item_add = Button(f, text="Добавить", command=append_list_item)
-    item_add.pack(fill=X)
-    item_del = Button(f, text="Удалить", command=del_list_item)
-    item_del.pack(fill=X)
-    list_save = Button(f, text="Сохранить", command=db.write_article_items)
-    list_save.pack(fill=X)
-    update_article_option()
+    result_income = result.result_income()
+    result_expence = result.result_expence()
+    result_all = result.result_all()
+    text_result_income.insert(0, result_income)
+    text_result_income.itemconfig(0, bg='green',)
+    text_result_expence.insert(0, result_expence)
+    text_result_expence.itemconfig(0, bg='red')
+    text_result_all.insert(0, result_all)
 
-
-def append_list_item():
-    '''добавляем в окно с нашим списком новое значение
-    расхода или дохода
-    '''
-    lbox.insert(END, entry.get())
-    entry.delete(0, END)
-
-
-def add_list_item():
-    '''добавляем в наш основной список,новые добавленные
-    пользователем значения, которые будут записаны в наш файл  
-    '''
-    articles_items = db.get_articles_items()
-    article_item = lbox.get(0, END)
-    for item in article_item:
-        if (item in articles_items) == False:
-            articles_items.append(item)
-    return articles_items
-1
-
-def update_article_option():
-    '''выводит наши значения пуков 
-    расходов и доходов в окно
-    '''
-    lbox.delete(0, END)
-    articles = db.get_articles_items()
-    for article in articles:
-        lbox.insert(0, article)
-
-
-def del_list_item():
-    '''удаляем не нужный пункт расходов или доходов
-    '''
-    select = list(lbox.curselection())
-    select.reverse()
-    for i in select:
-        lbox.delete(i) 
-    db.write_article_items()       
-    
-    
-    

@@ -4,3 +4,6 @@ ARTICLE_FILE_NAME = 'data_file.txt'
 DATE_FORMAT = '%Y.%m.%d'
 # переменная названия файла со списком наших значений расходов и доходов
 ARTICLE_OPTIONS = 'options_list.txt'
+
+CATEGORY = ['Авто', 'ЖКХ','Зарплата', "Одежда", "Продукты", "Премия", "Образование"]
+TYPE_VALUE = ['+', '-']
