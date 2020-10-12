@@ -1,1 +1,1 @@
-[]
+[{"cost": 1, "data_create": "2020.10.11", "type_item": "-", "type_value": "Авто"}, {"cost": 1, "data_create": "2020.10.11", "type_item": "+", "type_value": "Авто"}, {"cost": 1, "data_create": "2020.10.11", "type_item": "+", "type_value": "Авто"}, {"cost": 1, "data_create": "2020.10.11", "type_item": "-", "type_value": "Авто"}]

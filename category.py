@@ -1,7 +1,9 @@
 import db
 from tkinter import (Button, Entry, Label, LabelFrame, OptionMenu, 
-                    StringVar, END, messagebox as mb, Scrollbar, Listbox,EXTENDED,Frame,TOP, simpledialog, Toplevel,LEFT, N, Y, X)
-
+                    StringVar, END, messagebox as mb, Scrollbar, Listbox,EXTENDED,Frame,TOP, simpledialog, 
+                    Toplevel,LEFT, N, Y, X, Menu
+                    )
+import setting
 
 def create_window_category_change():
     '''Создаем окно, где можно
@@ -15,6 +17,8 @@ def create_window_category_change():
     #top.grab_set()
     #мы задаем приложению команду, что пока не будет закрыто окно top пользоваться другим окном будет нельзя.
     #top.wait_window()
+    lbox_var = StringVar(top)
+    new_category = StringVar(top)
     lbox = Listbox(top, selectmode=EXTENDED)
     lbox.pack(side=LEFT)
     scroll = Scrollbar(top, command=lbox.yview)
@@ -24,50 +28,57 @@ def create_window_category_change():
     f.pack(side=LEFT, padx=10)
     entry = Entry(f)
     entry.pack(anchor=N)
-    item_add = Button(f, text="Добавить", command=append_category)
-    item_add.pack(fill=X)
-    item_del = Button(f, text="Удалить", command=del_list_item)
-    item_del.pack(fill=X)
-    list_save = Button(f, text="Сохранить", command=db.write_article_items)
-    list_save.pack(fill=X)
+    category_add = Button(f, text="Добавить", command=append_category)
+    category_add.pack(fill=X)
+    category_del = Button(f, text="Удалить", command=del_category)
+    category_del.pack(fill=X)
     update_category_list()
 
 
 def append_category():
-    '''добавляем в окно с нашим списком новое значение
-    расхода или дохода
-    '''
+    ''' добавляем в окно с нашим списком новое значение
+        расхода или дохода
+    '''    
     lbox.insert(END, entry.get())
-    entry.delete(0, END)
+    new_category = lbox.get(END)
+    add_list_category(new_category)
 
 
-def add_list_item():
+
+
+def add_list_category(new_category):
     '''добавляем в наш основной список,новые добавленные
     пользователем значения, которые будут записаны в наш файл  
     '''
-    articles_items = db.get_articles_items()
-    articles_items.clear()
-    article_item = lbox.get(0, END)
-    for item in article_item:
-        if (item in articles_items) == False:
-            articles_items.append(item)
-    return articles_items
+    articles_category = db.get_articles_category()
+    if new_category not in articles_category:
+        articles_category.append(new_category)
+    elif new_category == '':
+        mb.showerror('Ошибка', 'Вы не ввели значение!')
+    else:
+        mb.showerror('Ошибка', 'Такая категория уже есть!')            
+    db.write_article_category(articles_category)
     update_category_list()
+    
+
 
 def update_category_list():
     '''выводит наши значения пунктов 
     расходов и доходов в окно
     '''
     lbox.delete(0, END)
-    articles = db.get_articles_items()
-    for article in articles:
-        lbox.insert(0, article)
+    articles_category = db.get_articles_category() + setting.CATEGORY
+    for article in articles_category:
+        lbox.insert(0, article)    
 
 
-def del_list_item():
+def del_category():
     '''удаляем не нужный пункт расходов или доходов
     '''
+    articles_category = db.get_articles_category()
     select = list(lbox.curselection())
     select.reverse()
     for i in select:
-        lbox.delete(i)            
+        lbox.delete(i)
+        articles_category.pop(i)
+    db.write_article_category(articles_category)                

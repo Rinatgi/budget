@@ -1,6 +1,7 @@
 from tkinter import (Tk, Menu, Button, Entry, Label, LabelFrame, OptionMenu, 
                     StringVar, END, messagebox as mb, Scrollbar, Listbox,EXTENDED,
-                    Frame,TOP, simpledialog, Toplevel,LEFT, N, Y, X)
+                    Frame,TOP, simpledialog, Toplevel,LEFT, N, Y, X
+                    )
 import ui
 import db
 import datetime
@@ -8,6 +9,7 @@ import category
 import setting
 import result
 from tkinter.ttk import Combobox
+import sort
 
 ent_rashod_dohod = None
 variable = None
@@ -20,7 +22,7 @@ def create_widget(window):
     '''
     global ent_rashod_dohod, variable, options, text_result
 
-    options = setting.CATEGORY
+    options = db.get_articles_category() + setting.CATEGORY
     variable = StringVar(window)
     frame_1 = LabelFrame(window, text='Данные', height=300, width=600)
     frame_2 = LabelFrame(window, text='Списки расходов и доходов', height=500, width=700)
@@ -82,7 +84,7 @@ def create_widget(window):
     frame_3.place(relx=0.47, rely= 0.70)
     combo_category.place(relx=0.10, rely=0.02)
     combo_type.place(relx=0.36, rely=0.02)
-    show_result(text_result_income, text_result_expence, text_result_all)
+    #result.show_result(text_result_income, text_result_expence, text_result_all)
 
 def add_type_rashod():
     '''добавляем в спикок словарь с нашими расходами
@@ -167,15 +169,7 @@ def del_article_list():
     text_result.delete(0, END)
 
 
-def show_result(text_result_income, text_result_expence, text_result_all):
-    '''Выводим суммы доходоб расходов и общий результат
+def update_option_category_list():
+    '''обновляет список выбора значений расхода и дохода
     '''
-    result_income = result.result_income()
-    result_expence = result.result_expence()
-    result_all = result.result_all()
-    text_result_income.insert(0, result_income)
-    text_result_income.itemconfig(0, bg='green',)
-    text_result_expence.insert(0, result_expence)
-    text_result_expence.itemconfig(0, bg='red')
-    text_result_all.insert(0, result_all)
-
+    pass

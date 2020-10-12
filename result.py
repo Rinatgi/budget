@@ -37,3 +37,16 @@ def result_all():
 
     return result_all
     '''
+
+
+def show_result(text_result_income, text_result_expence, text_result_all):
+    '''Выводим суммы доходоб расходов и общий результат
+    '''
+    result_income = result_income()
+    result_expence = result_expence()
+    result_all = result_all()
+    text_result_income.insert(0, result_income)
+    text_result_income.itemconfig(0, bg='green',)
+    text_result_expence.insert(0, result_expence)
+    text_result_expence.itemconfig(0, bg='red')
+    text_result_all.insert(0, result_all)
