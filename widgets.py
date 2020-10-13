@@ -20,7 +20,7 @@ text_result = None
 def create_widget(window):
     '''функция создания кнопок и их активация
     '''
-    global ent_rashod_dohod, variable, options, text_result
+    global ent_rashod_dohod, variable, options, text_result, select_value
 
     options = db.get_articles_category() + setting.CATEGORY
     variable = StringVar(window)
@@ -29,7 +29,7 @@ def create_widget(window):
     frame_3 = LabelFrame(window, text='Результаты', height=200, width=700)
     combo_category = Combobox(frame_2)
     combo_type = Combobox(frame_2)
-    combo_category['values'] = setting.CATEGORY
+    combo_category['values'] = options
     combo_type['values'] = setting.TYPE_VALUE
     combo_category.current(0)
     combo_type.current(0)
@@ -166,10 +166,13 @@ def del_article():
 
 def del_article_list():
 
-    text_result.delete(0, END)
+    text_result.delete(0, END) 
 
 
-def update_option_category_list():
+def update_option_category_list(write_articles):
     '''обновляет список выбора значений расхода и дохода
     '''
-    pass
+    update_article_list = write_articles + setting.CATEGORY
+    select_value['menu'].delete(0 , END)
+
+    

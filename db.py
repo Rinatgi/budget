@@ -55,11 +55,11 @@ def get_articles_category():
         with open (setting.ARTICLE_OPTIONS, 'r', encoding='utf-8') as f:
             try:
             #перехватываем ошибки
-                articles_category = json.load(f)
+                articles_category = json.load(f) 
             except Exception:
-                articles_category= []        
+                articles_category = []  
     else:
-        articles_category =[]
+        articles_category = []
 
     return articles_category
 
@@ -72,5 +72,5 @@ def write_article_category(articles_category):
         write_articles.append(category)
     with open (setting.ARTICLE_OPTIONS, 'w', encoding='utf-8') as f:
         data = json.dump(write_articles,f, ensure_ascii=False)     
-
+    widgets.update_option_category_list(write_articles)
 
