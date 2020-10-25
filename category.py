@@ -67,24 +67,20 @@ def update_category_list():
     расходов и доходов в окно
     '''
     lbox.delete(0, END)
-    articles_category = db.get_articles_category() + setting.CATEGORY
+    articles_category = db.get_articles_category()
     for article in articles_category:
-        lbox.insert(0, article)    
+        lbox.insert(END, article)    
 
 
 def del_category():
     '''удаляем не нужный пункт расходов или доходов
     '''
-    del_category_article = []
-    articles_category_write = db.get_articles_category()
-    articles_category = db.get_articles_category() + setting.CATEGORY
+    articles_category = db.get_articles_category()
+    print(lbox.curselection())
     select = list(lbox.curselection())
     select.reverse()
     for i in select:
         lbox.delete(i)
-        del_category = articles_category.pop(i)
-        del_category_article.append(del_category)
-    print(del_category_article)    
-    for category in del_category_article:
-        articles_category_write.remove(category)
-    db.write_article_category(articles_category_write)                
+        articles_category.pop(i)
+        print (articles_category)
+    db.write_article_category(articles_category)                

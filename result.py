@@ -1,4 +1,5 @@
 import db
+from tkinter import END
 
 
 def result_income():
@@ -30,23 +31,26 @@ def result_expence():
 def result_all():
     pass
     ''' общий итог
-    
-    result_income = result_income()
-    result_expence = result_expence()
-    result_all = result_income - result_expence
-
-    return result_all
     '''
+    sum_result_income = result_income()
+    sum_result_expence = result_expence()
+    sum_result_all = sum_result_income - sum_result_expence
+
+    return sum_result_all
+    
 
 
 def show_result(text_result_income, text_result_expence, text_result_all):
     '''Выводим суммы доходоб расходов и общий результат
     '''
-    result_income = result_income()
-    result_expence = result_expence()
-    result_all = result_all()
-    text_result_income.insert(0, result_income)
+    sum_result_income = result_income()
+    sum_result_expence = result_expence()
+    sum_result_all = result_all()
+    text_result_income.delete(0, END)
+    text_result_expence.delete(0, END)
+    text_result_all.delete(0, END)
+    text_result_income.insert(0, sum_result_income)
     text_result_income.itemconfig(0, bg='green',)
-    text_result_expence.insert(0, result_expence)
+    text_result_expence.insert(0, sum_result_expence)
     text_result_expence.itemconfig(0, bg='red')
-    text_result_all.insert(0, result_all)
+    text_result_all.insert(0, sum_result_all)

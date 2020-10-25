@@ -20,7 +20,7 @@ def get_articles():
                 for article in articles:
                 #преобразуем дату в формат datetime
                     article['data_create'] = ( 
-                        datetime.datetime.strptime(article['data_create'], setting.DATE_FORMAT))
+                        datetime.datetime.strptime(article['data_create'], setting.DATE_FORMAT)).date()
 
             except Exception:
                 articles = []        
@@ -55,11 +55,11 @@ def get_articles_category():
         with open (setting.ARTICLE_OPTIONS, 'r', encoding='utf-8') as f:
             try:
             #перехватываем ошибки
-                articles_category = json.load(f) 
+                articles_category = json.load(f)
             except Exception:
-                articles_category = []  
+                articles_category = setting.CATEGORY  
     else:
-        articles_category = []
+        articles_category = setting.CATEGORY
 
     return articles_category
 
