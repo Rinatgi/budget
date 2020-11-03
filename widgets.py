@@ -33,8 +33,14 @@ def create_widget(window):
     frame_1 = LabelFrame(window, text='Данные', height=300, width=600)
     frame_2 = LabelFrame(window, text='Списки расходов и доходов', height=500, width=700)
     frame_3 = LabelFrame(window, text='Результаты', height=200, width=700)
-    combo_category = Combobox(frame_2, values=options, postcommand=sort_article.refresh_sort_category)
-    combo_type = Combobox(frame_2)
+    combo_category = Combobox(
+                            frame_2, 
+                            values=options, 
+                            postcommand=sort_article.refresh_sort_category, 
+                            width=12, 
+                            state='readonly',
+                            )
+    combo_type = Combobox(frame_2, width=5, state='readonly')
     combo_type['values'] = ['Все', 'Расходы', 'Доходы'] 
     combo_category.current(0)
     combo_type.current(0)
@@ -51,7 +57,8 @@ def create_widget(window):
     btn_result = Button(frame_2, text='Oтсортировать', font=('Arial', 12), command=sort_article.sort_article_list)
     btn_delete = Button(frame_2, text='Удалить', command=del_article, font=('Arial', 12))
     btn_demo = Button(frame_2, text='Демо', command=conftest.request_user)
-    btn_calendar = Button(frame_2, text='Выберите дату', command=cal.create_window_calendar)
+    btn_calendar = Button(frame_2, text='Сортировка по дате', command=cal.create_window_calendar)
+    btn_range_date = Button(frame_2, text='Сортировка по периоду', command=cal.create_window_range_date)
     ent_rashod_dohod = Entry(frame_1, width=40, font=('Arial', 12))
     label_text_select = Label(frame_1, text='Выбирите нужный пункт расходов и доходов:', font=('Arial', 12))
     label_text_select_type = Label(frame_1, text='Введите сумму расходов или доходов:', font=('Arial', 12))
@@ -76,7 +83,8 @@ def create_widget(window):
     btn_append_item.place(relx=0.30,rely=0.15)
     btn_result.place(relx=0.75, rely=0.90)
     btn_demo.place(relx=0.35, rely=0.90)
-    btn_calendar.place(relx=0.80, rely=0.02 )
+    btn_calendar.place(relx=0.36, rely=0.02 )
+    btn_range_date.place(relx=0.57, rely=0.02)
     text_result.place(relx=0.10, rely=0.09)
     text_result_expence.place(relx=0.33, rely=0.03)
     text_result_income.place(relx=0.33, rely=0.18)
@@ -87,13 +95,13 @@ def create_widget(window):
     label_text_expence.place(relx=0.03,rely=0.03)
     label_text_income.place(relx=0.03,rely=0.18)
     label_text_all.place(relx=0.03,rely=0.33)
-    label_date_vision.place(relx=0.62, rely=0.02)
+    #label_date_vision.place
     scroll.place(relx=0.95, rely=0.09, height=380)
     frame_1.place(relx=0.02, rely=0.02)
     frame_2.place(relx=0.47, rely= 0.02)
     frame_3.place(relx=0.47, rely= 0.70)
     combo_category.place(relx=0.10, rely=0.02)
-    combo_type.place(relx=0.36, rely=0.02)
+    combo_type.place(relx=0.25, rely=0.02)
     result.show_result(text_result_income, text_result_expence, text_result_all)
 
 def add_type_rashod():
@@ -149,7 +157,8 @@ def update_article_list():
     index = 0 
     articles = db.get_articles()
     for article in articles:
-        s = '{cost} руб. {type_item} {type_value} {data_create}'.format(**article)
+        item_value = article['type_value']
+        s = '{cost} руб. {type_item} {type_value} {data_create}'.format(get_short_string(item_value),**article)
         text_result.insert(0, s)
         if article['type_item'] == '-':
             text_result.itemconfig(index, bg='red')
@@ -176,11 +185,11 @@ def del_article():
 def update_option_category_list(write_articles):
     '''обновляет список выбора значений расхода и дохода
     '''
-    select_value['menu'].delete(0 , END)
+    select_value.children['menu'].delete(0 , END)
     
     for _category in write_articles:
         select_value.children["menu"].add_command(
-            label=_category,command=lambda veh=_category: options.set(veh)
+            label=_category, command=lambda veh=_category: variable.set(veh)
         )
 
 
@@ -188,3 +197,15 @@ def show_date(select_date):
     '''показывает выбранную дату для сортировки
     '''
     label_date_vision.config(text=select_date.strftime(setting.DATE_FORMAT))
+
+
+def get_short_string(item_value, size=10):
+    """
+    функция принимает строку, и макс размер длины строки
+    и если строка длинее этого размера, то обрежет её и добавит 
+    в конце три точки
+    """
+    three_dots = '...'
+    if len(item_value) > size: 
+        item_value = item_value[:size-len(three_dots) ] + three_dots
+    return item_value

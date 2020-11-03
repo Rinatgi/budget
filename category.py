@@ -1,6 +1,6 @@
 import db
 from tkinter import (Button, Entry, Label, LabelFrame, OptionMenu, 
-                    StringVar, END, messagebox as mb, Scrollbar, Listbox,EXTENDED,Frame,TOP, simpledialog, 
+                    StringVar, END, Scrollbar, Listbox,EXTENDED,Frame,TOP, 
                     Toplevel,LEFT, N, Y, X, Menu
                     )
 import setting

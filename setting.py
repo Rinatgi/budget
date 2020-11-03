@@ -6,4 +6,6 @@ DATE_FORMAT = '%Y.%m.%d'
 ARTICLE_OPTIONS = 'options_list.txt'
 
 CATEGORY = ['Авто', 'ЖКХ','Зарплата', "Одежда", "Продукты", "Премия", "Образование"]
-TYPE_VALUE = ['+', '-']
+
+INCOMING_ITEM = '+'
+EXPENCE_ITEM = '-'

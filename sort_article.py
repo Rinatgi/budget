@@ -3,6 +3,7 @@ import datetime
 import widgets
 import cal
 from tkinter import END
+import setting
 
 
 def refresh_sort_category():
@@ -13,13 +14,11 @@ def refresh_sort_category():
 def sort_article_list(select_date):
     '''функция сотировки по дате
     '''
-    print(select_date)
     articles = db.get_articles()
     sorted_articles = []
     for article in articles:
         if article['data_create'] == select_date:
             sorted_articles.append(article)
-    print(sorted_articles)
     update_article_list(sorted_articles)
 
 def update_article_list(sorted_articles):
@@ -36,4 +35,25 @@ def update_article_list(sorted_articles):
         else:
             widgets.text_result.itemconfig(index, bg='green')                
     index += 1
+
+
+def sort_article_range_date(start_date, end_date):
+    '''функция определения дат по заданным периодам
+    '''
+    articles = db.get_articles()
+    sorted_articles = []
+    date_1 = min(start_date, end_date)
+    date_2 = max(start_date, end_date) 
+    
+    while date_1 < date_2:
+        date_1 += datetime.timedelta(days=1)
+        for article in articles:
+            if article['data_create'] == date_1:
+                sorted_articles.append(article)
+
+    update_article_list(sorted_articles)
+   
+
+
+
 
